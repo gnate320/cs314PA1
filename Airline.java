@@ -102,6 +102,8 @@ public class Airline {
 					+ ", but the flight ID is null.");
 		}
 		idArg = idArg.toUpperCase();
+		//System.out.println(idArg);
+		//System.out.println(myFlights.get(idArg));
 		return myFlights.get(idArg);
 	}
 	

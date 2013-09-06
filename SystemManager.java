@@ -91,6 +91,8 @@ public class SystemManager {
 			
 			//The Flight constructor adds the given flight to the owning airlines flight list
 			newFlight = new Flight(airline, origPort, destPort, date, flightIdArg);
+			//This was Nate ane Andrew
+			airline.addFlight(newFlight);
 		}
 		catch(Exception e)
 		{
@@ -198,6 +200,9 @@ public class SystemManager {
 			//Look up airline and flight
 			Airline airline = findAirline(airlineName);
 			Flight flight = airline.findFlight(flightID);
+			//System.out.println(sectionType);
+			//System.out.println(row);
+			//System.out.println(column);
 			flight.bookSeat(sectionType, row, column);
 			bookingSuccess = true;
 		}

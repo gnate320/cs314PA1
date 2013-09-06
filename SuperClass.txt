@@ -1,0 +1,12 @@
+super class:
+	
+	Airlines/Cruises
+	
+1. 	Flights/Trips
+
+2. 	Airlines/Ships
+
+3. 	Airports/Ports
+
+4. 	Sections/Cabins
+	## Could make it so that cabins would be rows: 2/5 and columns: 1 ##
