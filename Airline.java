@@ -102,8 +102,6 @@ public class Airline {
 					+ ", but the flight ID is null.");
 		}
 		idArg = idArg.toUpperCase();
-		//System.out.println(idArg);
-		//System.out.println(myFlights.get(idArg));
 		return myFlights.get(idArg);
 	}
 	
@@ -124,7 +122,7 @@ public class Airline {
 		for(Flight currentFlight : allFlightList)
 		{
 			//If the current flight matches the given criteria, add it into the list of acceptable flights
-			if(currentFlight.getOrigin() == originAirport && currentFlight.getDestination() == destinationAirport && currentFlight.hasAvailableSeat())
+			if(currentFlight.getOrigin() == originAirport && currentFlight.getDestination() == 					destinationAirport && currentFlight.hasAvailableSeat())
 			{
 				acceptableFlightList.add(currentFlight);
 			}
