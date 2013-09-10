@@ -1,8 +1,14 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class ClientProg {
 	public static void main(String args[]){
 	SystemManager res = new SystemManager();
+	BufferedReader cin = new BufferedReader(new InputStreamReader(System.in));
+
 	//Create airports
-	res.createAirport("DEN");
+	/*	res.createAirport("DEN");
 	res.createAirport("DFW");
 	res.createAirport("LON");
 	res.createAirport("JPN");
@@ -46,6 +52,58 @@ public class ClientProg {
 	res.bookSeat("DELTA", "123", SeatClass.business, 1, 'A');
 	//already booked
 	res.displaySystemDetails();
-	res.findAvailableFlights("DEN", "LON");
+	res.findAvailableFlights("DEN", "LON"); */
+
+	boolean valid = false;
+	do {
+		System.out.println("1. Create...");
+		System.out.println("2. Book...");
+		System.out.println("3. Display...");
+		System.out.print("Choose an operation: ");		
+		String opt = "";
+		try {
+			opt = cin.readLine();
+		}
+		catch (IOException e)
+		{
+			System.out.println("Error reading input from console.");
+		}
+
+		//System.out.println(opt);
+		if (opt.equalsIgnoreCase("1. Create") || 
+				opt.equalsIgnoreCase("Create") ||
+				opt.equalsIgnoreCase("C") ||
+				opt.equalsIgnoreCase("1"))
+		{
+			valid = true;
+			opt = "create";
+		}	
+		else if (opt.equalsIgnoreCase("2. Book") ||
+                	opt.equalsIgnoreCase("Book") ||
+                    opt.equalsIgnoreCase("B") ||
+					opt.equalsIgnoreCase("2"))
+		{
+			valid = true;
+			opt = "book";
+		}
+		
+		else if (opt.equalsIgnoreCase("3. Display") ||
+					opt.equalsIgnoreCase("Display") ||
+					opt.equalsIgnoreCase("D") ||
+					opt.equalsIgnoreCase("3"))
+		{
+			valid = true;
+			opt = "display";
+		}
+		else 
+		{
+			valid = false;
+			opt = "";
+		}
+	}while (!valid);
+	
+	
+			
+	
 	}
 }
