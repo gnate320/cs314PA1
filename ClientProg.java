@@ -9,7 +9,7 @@ public class ClientProg {
 		BufferedReader cin = new BufferedReader(new InputStreamReader(System.in));
 
 		//Create airports
-		/*	res.createAirport("DEN");
+		res.createAirport("DEN");
 		res.createAirport("DFW");
 		res.createAirport("LON");
 		res.createAirport("JPN");
@@ -53,9 +53,10 @@ public class ClientProg {
 		res.bookSeat("DELTA", "123", SeatClass.business, 1, 'A');
 		//already booked
 		res.displaySystemDetails();
-		res.findAvailableFlights("DEN", "LON"); */
+		res.findAvailableFlights("DEN", "LON");  //*/
 
-			
+
+		/*	
 		String command = "";
 		do {
 			
@@ -114,17 +115,17 @@ public class ClientProg {
 			System.out.print("The 'create' command can be used to make a new record ");
 			System.out.print("for a location, company, trip, or section.  ");
 			System.out.print("It is important to have all of the required information ");
-	    	System.out.print("before creating a record.  For help with 'create' enter ");
+	    		System.out.print("before creating a record.  For help with 'create' enter ");
 			System.out.print("'help -c'.\n\n" );
 		
 			System.out.println("\t 'Book' <Flight/Cruise> ...\n");
 			System.out.print("The 'book' command allows you to reserve passage on a flight or cruise.  ");
-		    System.out.print("It is important to have all of the required information when using the book command.  ");
+		     System.out.print("It is important to have all of the required information when using the book command.  ");
 			System.out.print("For help with 'book' enter 'help -b'.\n\n");
 
 			System.out.println("\t'Display' <Flight/Cruise>\n");
 			System.out.print("The 'display' command allows you to view the current records of Flights or Cruises.  It can be useful for planning a reservation. \n\n");
-		}
-	}	
+		} //*/
+	} //*/	
 
 }

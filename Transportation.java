@@ -15,12 +15,75 @@ public class Transportation {
 	public final static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	
 	private String id;
-	private Company owner;
-	private TransportStation origin;
-	private TransportStation destination;
-	private Calendar date;
+	protected Company owner;
+	protected TransportStation origin;
+	protected TransportStation destination;
+	protected Calendar date;
 	
 	// CONSTRUCTOR //
+	public Transportation(Company ownerArg, TransportStation originArg, TransportStation destinationArg, Calendar dateArg, String idArg) throws ManagementException
+	{
+		//Check to see if the string is null
+		if(idArg == null)
+		{
+			throw new ManagementException("You are attempting to create a "+ getClass().getName() + " " + "with a null ID. All " + getClass().getName() + "s " + "must have IDs.");
+		}
+		idArg = idArg.toUpperCase();
+		boolean nameIsOK = checkId(idArg);
+		
+		if(!nameIsOK)
+		{
+			throw new ManagementException(getClass().getName() + " ID must have between " + MINIDCHARS + " and " + MAXIDCHARS + " alphanumeric characters, the length is " 
+					+ idArg.length() + " for ID " + idArg);
+		}
+
+		//Assign id and owner so that calls to this.toString() can resolve.
+		id = idArg;
+		
+		if(ownerArg == null)
+		{
+			throw new ManagementException("You are attempting to create "+ getClass().getName() + " " + idArg + ", but no owner was given.");
+		}
+		owner = ownerArg;
+		
+		//Check if airline, airport and date objects are null
+		if(originArg == null)
+		{
+			throw new ManagementException("You are attempting to create " + this.toString() + ", but no origin was given.");
+		}
+		if(destinationArg == null)
+		{
+			throw new ManagementException("You are attempting to create " + this.toString() + ", but no destination was given.");
+		}
+		if(dateArg == null)
+		{
+			throw new ManagementException("You are attempting to create " + this.toString() + ", but no date was given.");
+		}
+		
+		//Flights cannot have the same origin and destination.
+		if(originArg == destinationArg)
+		{
+			throw new ManagementException(this.toString() + " has an origin and destination at " + originArg 
+					+". Transportation cannot start and end at the same Location.");
+		}
+		
+		//Check that the flight falls after the allowed start date
+		Calendar earliestAllowedDate = Calendar.getInstance();
+		earliestAllowedDate.set(AFTERYEAR, AFTERMONTH, AFTERDAY);
+		if(!dateArg.after(earliestAllowedDate))
+		{
+			throw new ManagementException(getClass().getName()+"s must be scheduled after " + simpleDateFormat.format(earliestAllowedDate.getTime()) 
+					+", " + this.toString() + " is scheduled to depart on " + simpleDateFormat.format(dateArg.getTime()));
+		}
+		
+		//Assignments
+		origin = originArg;
+		destination = destinationArg;
+		date = dateArg;	
+	}
+	
+	
+	
 	
 	// METHODS //
 	//Performs a check on the ID.
@@ -43,6 +106,11 @@ public class Transportation {
 		}
 		
 		return nameIsOK;
+	}
+	
+	public String toString()
+	{
+		return owner.toString() + " "+ getClass().getName() + " " + id;
 	}
 	
 	public String getId()

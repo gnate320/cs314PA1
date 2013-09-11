@@ -47,13 +47,13 @@ public class FlightSection {
 		if(rowsArg > MAXROWS || rowsArg < MINROWS)
 		{
 			throw new ManagementException("There must be at least " + MINROWS + " row and no more than " + MAXROWS + " rows in a section. You specified " 
-					+ rowsArg + " rows of type " + typeArg + " on " + flightArg.getAirline() + " flight " + flightArg + ".");
+					+ rowsArg + " rows of type " + typeArg + " on " + flightArg.getOwner() + " flight " + flightArg + ".");
 		}
 		
 		if(columnsArg > MAXCOLUMNS || columnsArg < MINCOLUMNS)
 		{
 			throw new ManagementException("There must be at least " + MINCOLUMNS + " column and no more than " + MAXCOLUMNS + " columns in a section. You specified " 
-					+ columnsArg + " column sof type " + typeArg + " on " + flightArg.getAirline() + " flight " + flightArg + ".");
+					+ columnsArg + " column sof type " + typeArg + " on " + flightArg.getOwner() + " flight " + flightArg + ".");
 		}
 		
 		//Assign variables
