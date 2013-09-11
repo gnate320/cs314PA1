@@ -6,7 +6,12 @@ import java.util.Scanner;
 public class ClientProg {
 	public static void main(String args[]){
 		SystemManager res = new SystemManager();
-		BufferedReader cin = new BufferedReader(new InputStreamReader(System.in));
+		
+		//TODO: Establish Customer Vs Admin....
+		//    Air vs Sea.....
+
+		String location = "Airport";
+		String company = "Airline";
 
 		//Create airports
 		/*	res.createAirport("DEN");
@@ -60,13 +65,7 @@ public class ClientProg {
 		do {
 			
 			System.out.print("Enter a command or 'help': ");
-			try {
-				command = cin.readLine();
-			}
-			catch (IOException e)
-			{
-				System.out.println("IOException: error reading input from the command line.");
-			}
+			command = getInput();			
 			//System.out.println(command);
 
 			Scanner commParse = new Scanner(command);
@@ -81,21 +80,106 @@ public class ClientProg {
 			}
 			else if (opt.equalsIgnoreCase("create"))
 			{
-				System.out.println("oh yeah!");
+				if (!commParse.hasNext())
+					printUsage("-c");
+				else
+				{
+					String createWhat = commParse.next();
+					if (createWhat.equalsIgnoreCase(location) )
+					{
+						String loc = ""; 
+						//no location entered so work with the user
+						if (!commParse.hasNext())
+						{
+							System.out.print("Enter the three letter location code: ");
+							loc = getInput();			
+						}
+						else
+							loc = commParse.next();
+						res.createAirport(loc);
+					}
+					if (createWhat.equalsIgnoreCase(company))
+					{
+						String name = "";
+						if (!commParse.hasNext())
+						{
+							System.out.print("Enter the five letter company name");
+							name = getInput();
+						}
+						else
+							name = commParse.next();
+						res.createAirline(name);
+					} 
+				}
+			}
+			else if (opt.equalsIgnoreCase("book"))
+			{	
+
+			}
+			else if (opt.equalsIgnoreCase("display"))
+			{
+				res.displaySystemDetails();
 			}
 				
-		}while(!command.equalsIgnoreCase("quit"));
-		
+		}while(!command.equalsIgnoreCase("quit") &&
+               !command.equalsIgnoreCase("q") );
+
+				
 			
 	}
+	
+	static String getInput() {
+		BufferedReader cin = new BufferedReader(new InputStreamReader(System.in));
 
+		String command;
+		try {
+			command = cin.readLine();
+		}
+		catch (IOException e) {
+			System.out.println("IOException: error reading input from the command line.");
+			command = "";
+		}
+		
+		return command;
+	}
 
 	static void printUsage(String o) {
 		
 		
 		if (o.equalsIgnoreCase("-c"))
 		{
-			System.out.println("\nhelp specific to create. syntax ect...");
+			System.out.println("\nCreate:");
+			System.out.print("Create can be used to add Airports, Ports ");
+			System.out.print("Airlines, Cruiselines, Flights, Cruises, ");
+			System.out.println(" flight sections, and Cruise Cabins.");
+			System.out.print("\n The system can guide you through ");
+			System.out.print("creating a record, but the create command ");
+			System.out.println("must contain the object type to create.");
+			System.out.println("\nExamples:");
+			System.out.println(" create Airport");
+			System.out.println(" create Port");
+			System.out.println(" create Airline");
+			System.out.println(" create Cruiseline");
+			System.out.println(" create Flight");
+			System.out.println(" create Cruise");
+			System.out.println(" create Section");
+			System.out.println(" create Cabin");
+			
+			System.out.print("\n If all of the required information is");
+			System.out.print("available, it can be entered in one line.");
+			System.out.println("The details must be in the correct order.");
+			System.out.println("\nExamples:");
+			System.out.println(" create Airport <name>");
+			System.out.println(" create Port <name>");
+			System.out.println(" create Airline <name>");
+			System.out.println(" create Cruiseline <name>");
+			System.out.print(" create Flight <name> <origin> ");
+			System.out.print("<destination> <year> <month> <day> ");
+			System.out.println("<flightID> ");
+			System.out.println(" create Cruise LOLOLOL");
+			System.out.print(" create Section <Airline> <flightID> ");
+			System.out.println("<#rows> <#columns> <class>");
+			System.out.println(" create Cabin <LOLOLOLOLOLOLOLOLOL>");		
 		} 
 		else if (o.equalsIgnoreCase("-b"))
 		{
@@ -119,11 +203,11 @@ public class ClientProg {
 		
 			System.out.println("\t 'Book' <Flight/Cruise> ...\n");
 			System.out.print("The 'book' command allows you to reserve passage on a flight or cruise.  ");
-		    System.out.print("It is important to have all of the required information when using the book command.  ");
+		    System.out.print("It is important to have all of the required information when booking a trip.  ");
 			System.out.print("For help with 'book' enter 'help -b'.\n\n");
 
 			System.out.println("\t'Display' <Flight/Cruise>\n");
-			System.out.print("The 'display' command allows you to view the current records of Flights or Cruises.  It can be useful for planning a reservation. \n\n");
+			System.out.print("The 'display' command allows you to view the current records of Flights or Cruises.  Display can be useful for planning a reservation. For help with Display enter 'help -d'.\n\n");
 		}
 	}	
 
