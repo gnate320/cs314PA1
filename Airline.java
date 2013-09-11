@@ -8,13 +8,13 @@ import java.util.regex.Pattern;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
-public class Airline {
+public class Airline extends Company{
 
 	//Define maximum and minimum number of characters in an id.
-	public final static int MAXIDCHARS = 5;
-	public final static int MINIDCHARS = 1;
+	//public final static int MAXIDCHARS = 5;
+	//public final static int MINIDCHARS = 1;
 
-	private String id;
+	//private String id;
 	private Hashtable<String, Flight> myFlights;
 	
 	/*Constructs new Airline objects.
@@ -24,52 +24,10 @@ public class Airline {
 	*/
 	public Airline(String idArg) throws ManagementException
 	{
-		//Check to make sure the string is not null
-		if(idArg == null)
-		{
-			throw new ManagementException("You have attempted to create an airline, but the name is null.");
-		}
-		
-		//Convert all names to upper case
-		idArg = idArg.toUpperCase();
-
-		//Do the name check
-		boolean nameIsOK = checkId(idArg);
-		
-		if(!nameIsOK)
-		{
-			throw new ManagementException("Airline name must be between " + MINIDCHARS + " and " + MAXIDCHARS + " (inclusive) alphabetic characters, name is length " 
-		+ idArg.length() + " for " + idArg + ".");
-		}
-
-		//If all of the above went OK, assign values
-		id = idArg;
+		super(idArg);
 		myFlights = new Hashtable<String, Flight>();
 	}
 	
-	//Performs a check on the ID.
-	private boolean checkId(String nameArg) throws ManagementException
-	{
-		boolean nameIsOK = true;
-		
-		//Check that length of name is in bounds
-		if(nameArg.length() < MINIDCHARS || nameArg.length() > MAXIDCHARS )
-		{
-			nameIsOK = false;
-		}
-		
-		//Use a regex to ensure that only alphabetic characters are in the name
-		Pattern p = Pattern.compile("^A-Z");
-		Matcher m = p.matcher(nameArg);
-		boolean containsNonAlphabetic = m.matches();
-		
-		if(containsNonAlphabetic)
-		{
-			nameIsOK = false;
-		}
-		
-		return nameIsOK;
-	}
 	
 	//Assign a flight to this airline. An airline can only have one instance of a given flight ID.
 	public void addFlight(Flight flightArg) throws ManagementException
@@ -85,7 +43,8 @@ public class Airline {
 		if(existingFlight != null)
 		{
 			//Then the flight must already exist if existingFlight is not null
-			throw new ManagementException("You are attempting to add " + flightArg + ", but a flight with that ID is already registered with that airline. " +existingFlight.getId() + existingFlight.getDestination()	);
+			throw new ManagementException("You are attempting to add " + flightArg + ", but a flight with that ID is already registered with that airline. " +existingFlight.getId() +
+										existingFlight.getDestination());
 		}
 		
 		//If the above test passed, then we can accept the flight for this Airline.
@@ -122,7 +81,7 @@ public class Airline {
 		for(Flight currentFlight : allFlightList)
 		{
 			//If the current flight matches the given criteria, add it into the list of acceptable flights
-			if(currentFlight.getOrigin() == originAirport && currentFlight.getDestination() == 					destinationAirport && currentFlight.hasAvailableSeat())
+			if(currentFlight.getOrigin() == originAirport && currentFlight.getDestination() == destinationAirport && currentFlight.hasAvailableSeat())
 			{
 				acceptableFlightList.add(currentFlight);
 			}
@@ -131,18 +90,8 @@ public class Airline {
 		return acceptableFlightList;
 	}
 	
-	public String toString()
-	{
-		return id;
-	}
-	
 	public Hashtable<String, Flight> getFlights()
 	{
 		return myFlights;
-	}
-	
-	public String getId() 
-	{
-		return id;
 	}
 }

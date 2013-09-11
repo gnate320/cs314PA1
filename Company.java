@@ -9,7 +9,7 @@ public class Company {
 	public final static int MAXIDCHARS = 5;
 	public final static int MINIDCHARS = 1;
 	private String id;
-	private Hashtable<String, Transportation> myTransports;
+	protected Hashtable<String, Transportation> myTransports;
 	
 	// CONSTRUCTOR //
 	public Company(String idArg) throws ManagementException
@@ -17,7 +17,7 @@ public class Company {
 		//Check to make sure the string is not null
 		if(idArg == null)
 		{
-			throw new ManagementException("You have attempted to create an company, but the name is null.");
+			throw new ManagementException("You have attempted to create a " + getClass().getName() + ", but the name is null.");
 		}
 		
 		//Convert all names to upper case
@@ -28,14 +28,14 @@ public class Company {
 		
 		if(!nameIsOK)
 		{
-			throw new ManagementException("Company name must be between " + MINIDCHARS + " and "
+			throw new ManagementException(getClass().getName() + " name must be between " + MINIDCHARS + " and "
 				+ MAXIDCHARS + " (inclusive) alphabetic characters, name is length "
 				+ idArg.length() + " for " + idArg + ".");
 		}
 
 		//If all of the above went OK, assign values
 		id = idArg;
-		myTransports = new Hashtable<String, Transportaion>();
+		myTransports = new Hashtable<String, Transportation>();
 	}
 	
 	// METHODS //

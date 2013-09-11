@@ -7,6 +7,29 @@ public class TransportStation {
 	private String id;
 	
 	// CONSTRUCTOR //
+	public TransportStation(String idArg) throws ManagementException
+	{
+		//Check to make sure the string is not null
+		if(idArg == null)
+		{
+			throw new ManagementException("You have attempted to create an " + getClass().getName() + " " + ", but the name is null.");
+		}
+		
+		//Convert all names to upper case
+		idArg = idArg.toUpperCase();
+		
+		//Check the given id
+		boolean nameIsOK = checkId(idArg);
+		
+		if(!nameIsOK)
+		{
+			throw new ManagementException("Airport name must be between " + MINIDCHARS + " and " + MAXIDCHARS + " (inclusive) alphabetic characters, name is length " 
+					+ idArg.length() + " for " + idArg + ".");
+		}
+		
+		//If all of the above went ok, then assign the name and the object is ready
+		id = idArg;
+	}
 	
 	
 	// METHODS //

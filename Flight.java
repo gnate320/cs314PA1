@@ -16,23 +16,23 @@ import java.util.regex.Pattern;
  * FlightSections. A Flight also must belong to an airline. 
  */
 
-public class Flight {
+public class Flight extends Transportation {
 
 	//Define the maximum and minimum number of ID characters,
-	public final static int MAXIDCHARS = 6;
-	public final static int MINIDCHARS = 3;
+	//public final static int MAXIDCHARS = 6;
+	//public final static int MINIDCHARS = 3;
 	
 	//All flights must be scheduled after this day
-	public final static int AFTERYEAR = 2012;
-	public final static int AFTERMONTH = 12;
-	public final static int AFTERDAY = 31;
-	public final static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+	//public final static int AFTERYEAR = 2012;
+	//public final static int AFTERMONTH = 12;
+	//public final static int AFTERDAY = 31;
+	//public final static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	
-	private String id;
-	private Airline owner;
-	private Airport origin;
-	private Airport destination;
-	private Calendar date;
+	//private String id;
+	//private Airline owner;
+	//private Airport origin;
+	//private Airport destination;
+	//private Calendar date;
 	private LinkedList<FlightSection> sections;
 	
 	/*Constructs new Flight objects.
@@ -42,91 +42,15 @@ public class Flight {
 	*/
 	public Flight(Airline ownerArg, Airport originArg, Airport destinationArg, Calendar dateArg, String idArg) throws ManagementException
 	{
-		//Check to see if the string is null
-		if(idArg == null)
-		{
-			throw new ManagementException("You are attempting to create a flight without a null ID. All flights must have IDs.");
-		}
-		idArg = idArg.toUpperCase();
-		boolean nameIsOK = checkId(idArg);
+		super(ownerArg, originArg, destinationArg, dateArg, idArg);
 		
-		if(!nameIsOK)
-		{
-			throw new ManagementException("Flight ID must have between " + MINIDCHARS + " and " + MAXIDCHARS + " alphanumeric characters, the length is " 
-					+ idArg.length() + " for ID " + idArg);
-		}
-
-		//Assign id and owner so that calls to this.toString() can resolve.
-		id = idArg;
-		
-		if(ownerArg == null)
-		{
-			throw new ManagementException("You are attempting to create flight " + idArg + ", but no owner airline was given.");
-		}
-		owner = ownerArg;
-		
-		//Check if airline, airport and date objects are null
-		if(originArg == null)
-		{
-			throw new ManagementException("You are attempting to create " + this.toString() + ", but no origin airport was given.");
-		}
-		if(destinationArg == null)
-		{
-			throw new ManagementException("You are attempting to create " + this.toString() + ", but no destination airport was given.");
-		}
-		if(dateArg == null)
-		{
-			throw new ManagementException("You are attempting to create " + this.toString() + ", but no date was given.");
-		}
-		
-		//Flights cannot have the same origin and destination.
-		if(originArg == destinationArg)
-		{
-			throw new ManagementException(this.toString() + " has an origin and destination at " + originArg 
-					+".A flight cannot start and end at the same airport.");
-		}
-		
-		//Check that the flight falls after the allowed start date
-		Calendar earliestAllowedDate = Calendar.getInstance();
-		earliestAllowedDate.set(AFTERYEAR, AFTERMONTH, AFTERDAY);
-		if(!dateArg.after(earliestAllowedDate))
-		{
-			throw new ManagementException("Flights must be scheduled after " + simpleDateFormat.format(earliestAllowedDate.getTime()) 
-					+", " + this.toString() + " is scheduled to fly on " + simpleDateFormat.format(dateArg.getTime()));
-		}
-		
-		//Assignments
-		origin = originArg;
-		destination = destinationArg;
-		date = dateArg;
 		sections = new LinkedList<FlightSection>();
 		
 		//Add the flight to the Airline. This will throw an error if the airline already has a flight with this id.
 		//This constructor will throw that error again up to whoever called it.
-		owner.addFlight(this);	
+		((Airline)owner).addFlight(this);	
 	}
 	
-	//Performs a check on the ID.
-	private boolean checkId(String idArg) throws ManagementException
-	{
-		boolean nameIsOK = true;
-		
-		//Use a regex to ensure that only alphanumeric characters are in the ID
-		Pattern p = Pattern.compile(".*\\W+.*");
-		Matcher m = p.matcher(idArg);
-		boolean containsNonAlphanumeric = m.matches();
-		
-		if(idArg.length() < MINIDCHARS || idArg.length() > MAXIDCHARS)
-		{
-			nameIsOK = false;
-		}
-		if(containsNonAlphanumeric)
-		{
-			nameIsOK = false;		
-		}
-		
-		return nameIsOK;
-	}
 	
 	//Returns true if there is at least one available seat in any section
 	public boolean hasAvailableSeat()
@@ -162,43 +86,7 @@ public class Flight {
 		desiredSection.bookSeat(row, col);
 	}
 	
-	public String toString()
-	{
-		return owner.toString() + " flight " + id;
-	}
 	
-	/*==========
-	   Getters
-	  ==========*/
-	public String getId()
-	{
-		return id;
-	}
-	
-	public Airline getAirline()
-	{
-		return owner;
-	}
-	
-	public Calendar getDate()
-	{
-		return date;
-	}
-	
-	public String getDateString()
-	{
-		return simpleDateFormat.format(date.getTime());
-	}
-
-	public Airport getOrigin() 
-	{
-		return origin;
-	}
-
-	public Airport getDestination() 
-	{
-		return destination;
-	}
 	
 	public LinkedList<FlightSection> getFlightSections()
 	{
