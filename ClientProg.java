@@ -73,7 +73,12 @@ public class ClientProg {
 			String opt = commParse.next();
 
 			if (opt.equalsIgnoreCase("help"))
-				printUsage();
+			{	
+				if (!commParse.hasNext())
+					printUsage("");
+				else
+					printUsage(commParse.next());
+			}
 			else if (opt.equalsIgnoreCase("create"))
 			{
 				System.out.println("oh yeah!");
@@ -85,11 +90,41 @@ public class ClientProg {
 	}
 
 
-	void printUsage() {
-		System.out.println("Welcome to the Travel Manager!");
-		System.out.println("You can use the trip manager to store and retrive Flight and Cruise information.");
-		System.out.println("\n Here are some of the ways the system and be used:");
-		System.out.println("\t 'Create' <Location/Company/Trip/Section> ");
-		System.out.println("LOLOLOLOLOL FINISH!!");
+	static void printUsage(String o) {
+		
+		
+		if (o.equalsIgnoreCase("-c"))
+		{
+			System.out.println("\nhelp specific to create. syntax ect...");
+		} 
+		else if (o.equalsIgnoreCase("-b"))
+		{
+			System.out.println("\nhelp specific to book.  syntax ect...");
+		}
+		else if (o.equalsIgnoreCase("-d"))
+		{
+			System.out.println("\nhelp specific to display.  syntax ect...");
+		}
+		else
+		{
+			System.out.println("\n\n\t\t**Welcome to the Travel Manager!**");
+			System.out.println("You can use the travel manager to store and retrive Flight and Cruise information.");
+			System.out.println("Here are some of the ways the system can be used: \n");
+			System.out.println("\t 'Create' <Location/Company/Trip/Section> ...\n");
+			System.out.print("The 'create' command can be used to make a new record ");
+			System.out.print("for a location, company, trip, or section.  ");
+			System.out.print("It is important to have all of the required information ");
+	    	System.out.print("before creating a record.  For help with 'create' enter ");
+			System.out.print("'help -c'.\n\n" );
+		
+			System.out.println("\t 'Book' <Flight/Cruise> ...\n");
+			System.out.print("The 'book' command allows you to reserve passage on a flight or cruise.  ");
+		    System.out.print("It is important to have all of the required information when using the book command.  ");
+			System.out.print("For help with 'book' enter 'help -b'.\n\n");
+
+			System.out.println("\t'Display' <Flight/Cruise>\n");
+			System.out.print("The 'display' command allows you to view the current records of Flights or Cruises.  It can be useful for planning a reservation. \n\n");
+		}
 	}	
+
 }
