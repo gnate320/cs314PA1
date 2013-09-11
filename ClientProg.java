@@ -12,6 +12,7 @@ public class ClientProg {
 
 		String location = "Airport";
 		String company = "Airline";
+		String transport = "Cruise";
 
 		//Create airports
 		/*	res.createAirport("DEN");
@@ -110,6 +111,108 @@ public class ClientProg {
 							name = commParse.next();
 						res.createAirline(name);
 					} 
+					if (createWhat.equalsIgnoreCase(transport))
+					{
+						// <airline/cruisline>
+						String line = "";
+						if (!commParse.hasNext())
+						{
+							System.out.print("Enter the " + transport + " company: ");
+							line = getInput();
+						} 
+						else
+						{
+							line = commParse.next();
+						}
+						
+						boolean end;
+						do {
+							//origin
+							String origin = "";
+							if (!commParse.hasNext())
+							{
+								System.out.print("Enter the " + transport + " origin: ");
+								origin = getInput();
+							} 
+							else
+							{
+								origin = commParse.next();
+							}
+
+							//<destination>
+							String dest = "";
+							if (!commParse.hasNext())
+							{
+								System.out.print("Enter the " + transport + " destination: ");
+								dest = getInput();
+							} 
+							else
+							{
+								dest = commParse.next();
+							}
+
+							// <year>
+							String year = "";
+							if (!commParse.hasNext())
+							{
+								System.out.print("Enter the " + transport + " year: ");
+								year = getInput();
+							} 
+							else
+							{
+								year = commParse.next();
+							}
+
+							// <month>
+							String month = "";
+							if (!commParse.hasNext())
+							{
+								System.out.print("Enter the " + transport + " month: ");
+								month = getInput();
+							} 
+							else
+							{
+								month = commParse.next();
+							}
+
+							// <day> 
+							String day = "";
+							if (!commParse.hasNext())
+							{
+								System.out.print("Enter the " + transport + " day: ");
+								day = getInput();
+							} 
+							else
+							{
+								day = commParse.next();
+							}
+						
+							end  = false;
+							if (transport.equalsIgnoreCase("Cruise"))
+							{
+								System.out.print("Is this the final port? (yes/no): ");
+								String ans = getInput();
+								if (ans.equalsIgnoreCase("yes") ||
+									ans.equalsIgnoreCase("y") )
+									end = true; 						
+							}
+
+						}while(transport.equalsIgnoreCase("Cruise") && end == false);
+						
+						// <flightID>
+						String name = "";
+						if (!commParse.hasNext())
+						{
+							System.out.print("Enter the " + transport + " name: ");
+							name = getInput();
+						} 
+						else
+						{
+							name = commParse.next();
+						}
+
+						 
+					}
 				}
 			}
 			else if (opt.equalsIgnoreCase("book"))
