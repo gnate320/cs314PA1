@@ -12,7 +12,7 @@ public class ClientProg {
 
 		String location = "Airport";
 		String company = "Airline";
-		String transport = "Cruise";
+		String transport = "Flight";
 
 		//Create airports
 		/*	res.createAirport("DEN");
@@ -104,7 +104,7 @@ public class ClientProg {
 						String name = "";
 						if (!commParse.hasNext())
 						{
-							System.out.print("Enter the five letter company name");
+							System.out.print("Enter the five letter company name: ");
 							name = getInput();
 						}
 						else
@@ -124,26 +124,27 @@ public class ClientProg {
 						{
 							line = commParse.next();
 						}
-						
+
+						//origin
+						String origin = "";
+						if (!commParse.hasNext())
+						{
+							System.out.print("Enter the " + transport + " origin: ");
+							origin = getInput();
+						} 
+						else
+						{
+							origin = commParse.next();
+						}						
+
 						boolean end;
-						do {
-							//origin
-							String origin = "";
-							if (!commParse.hasNext())
-							{
-								System.out.print("Enter the " + transport + " origin: ");
-								origin = getInput();
-							} 
-							else
-							{
-								origin = commParse.next();
-							}
+						do {	
 
 							//<destination>
 							String dest = "";
 							if (!commParse.hasNext())
 							{
-								System.out.print("Enter the " + transport + " destination: ");
+								System.out.print("Enter the next stop: ");
 								dest = getInput();
 							} 
 							else
