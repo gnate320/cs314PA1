@@ -5,5 +5,5 @@
 
 //Enumerates possible types of FlightSections.
 public enum SeatClass {
-	first, business, economy
+	first, business, economy, single, family
 }
