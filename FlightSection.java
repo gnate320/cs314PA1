@@ -157,7 +157,7 @@ public class FlightSection {
 			case first: return "first class";
 			case business: return "business class";
 			case economy: return "economy class";
-			default: return "unkown class";
+			default: return "unknown class";
 		}
 	}
 	
