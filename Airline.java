@@ -15,7 +15,7 @@ public class Airline extends Company{
 	//public final static int MINIDCHARS = 1;
 
 	//private String id;
-	private Hashtable<String, Flight> myFlights;
+	//private Hashtable<String, Flight> myFlights;
 	
 	/*Constructs new Airline objects.
 	*There are restrictions on airline names, which are enforced in the constructor.
@@ -25,11 +25,12 @@ public class Airline extends Company{
 	public Airline(String idArg) throws ManagementException
 	{
 		super(idArg);
-		myFlights = new Hashtable<String, Flight>();
+		//myFlights = new Hashtable<String, Flight>();
 	}
 	
 	
 	//Assign a flight to this airline. An airline can only have one instance of a given flight ID.
+	/*
 	public void addFlight(Flight flightArg) throws ManagementException
 	{
 		//Check if the flight object is null
@@ -49,7 +50,7 @@ public class Airline extends Company{
 		
 		//If the above test passed, then we can accept the flight for this Airline.
 		myFlights.put(flightArg.getId(), flightArg);
-	}
+	} //*/
 	
 	//Returns a flight object given a flightID string. Returns null if no such flight belongs to this airline.
 	public Flight findFlight(String idArg) throws NullPointerException
@@ -61,9 +62,10 @@ public class Airline extends Company{
 					+ ", but the flight ID is null.");
 		}
 		idArg = idArg.toUpperCase();
-		return myFlights.get(idArg);
+		return (Flight)myTransports.get(idArg);
 	}
 	
+	/*
 	//Finds a linked list of flights with an open set on a flight from the origin airport to the destination airport
 	public LinkedList<Flight> findAvailableFlights(Airport originAirport, Airport destinationAirport) throws ManagementException
 	{
@@ -76,7 +78,7 @@ public class Airline extends Company{
 			
 		//Create an empty list of acceptable flights and convert the flight hash to linked list for easy iteration
 		LinkedList<Flight> acceptableFlightList = new LinkedList<Flight>();
-		LinkedList<Flight> allFlightList = SystemManager.hashtableToLinkedList(myFlights);
+		LinkedList<Flight> allFlightList = SystemManager.hashtableToLinkedList((Hashtable<String,Flight>)myTransports);
 			
 		for(Flight currentFlight : allFlightList)
 		{
@@ -88,10 +90,12 @@ public class Airline extends Company{
 		}
 		
 		return acceptableFlightList;
-	}
+	} //*/
 	
+	
+	/*
 	public Hashtable<String, Flight> getFlights()
 	{
 		return myFlights;
-	}
+	}//*/
 }

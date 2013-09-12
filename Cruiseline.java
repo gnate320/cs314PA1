@@ -5,13 +5,13 @@ import java.util.LinkedList;
 
 public class Cruiseline extends Company {
 
-	private Hashtable<String, Cruise> myTrips;
+	//private Hashtable<String, Cruise> myTrips;
 
 	public Cruiseline (String idArg) throws ManagementException {
 		super(idArg);
-		myTrips = new Hashtable<String, Cruise>();
+		//myTrips = new Hashtable<String, Cruise>();
 	}
-	
+	/*
 	public void addTrip(Cruise tripArg) throws ManagementException
 	{
 		//Check if the flight object is null
@@ -31,7 +31,7 @@ public class Cruiseline extends Company {
 		
 		//If the above test passed, then we can accept the flight for this Airline.
 		myTrips.put(tripArg.getId(), tripArg);
-	}
+	} //*/
 	
 	
 	
@@ -44,9 +44,10 @@ public class Cruiseline extends Company {
 					+ ", but the trip ID is null.");
 		}
 		idArg = idArg.toUpperCase();
-		return myTrips.get(idArg);
+		return (Cruise)myTransports.get(idArg);
 	}
 	
+	/*
 	public LinkedList<Cruise> findAvailableTrips(Port originPort, Port destinationPort) throws ManagementException
 	{
 		//Check if the airports are null
@@ -58,7 +59,7 @@ public class Cruiseline extends Company {
 			
 		//Create an empty list of acceptable flights and convert the flight hash to linked list for easy iteration
 		LinkedList<Cruise> acceptableTripList = new LinkedList<Cruise>();
-		LinkedList<Cruise> allTripList = SystemManager.hashtableToLinkedList(myTrips);
+		LinkedList<Cruise> allTripList = SystemManager.hashtableToLinkedList((Cruise)myTransports);
 			
 		for(Cruise currentTrip : allTripList)
 		{
@@ -70,11 +71,11 @@ public class Cruiseline extends Company {
 		}
 		
 		return acceptableTripList;
-	}
+	} //*/
 	
-	
+	/*
 	public Hashtable<String, Cruise> getTrips(){
 		return myTrips;
-	}
+	} //*/
 
 }

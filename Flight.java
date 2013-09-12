@@ -33,7 +33,7 @@ public class Flight extends Transportation {
 	//private Airport origin;
 	//private Airport destination;
 	//private Calendar date;
-	private LinkedList<FlightSection> sections;
+	//private LinkedList<FlightSection> sections;
 	
 	/*Constructs new Flight objects.
 	*There are restrictions on flight ids, which are enforced in the constructor.
@@ -44,11 +44,11 @@ public class Flight extends Transportation {
 	{
 		super(ownerArg, originArg, destinationArg, dateArg, idArg);
 		
-		sections = new LinkedList<FlightSection>();
+		//sections = new LinkedList<FlightSection>();
 		
 		//Add the flight to the Airline. This will throw an error if the airline already has a flight with this id.
 		//This constructor will throw that error again up to whoever called it.
-		((Airline)owner).addFlight(this);	
+		//((Airline)owner).addFlight(this);	
 	}
 	
 	
@@ -57,9 +57,9 @@ public class Flight extends Transportation {
 	{
 		boolean seatsAvailable = false;
 		
-		for(FlightSection section : sections)
+		for(Partition section : myPartitions)
 		{
-			if(section.hasAvailableSeat()) seatsAvailable = true;
+			if(((FlightSection)section).hasAvailableSeat()) seatsAvailable = true;
 		}
 		return seatsAvailable;
 	}
@@ -70,11 +70,11 @@ public class Flight extends Transportation {
 		FlightSection desiredSection = null;
 		
 		//This for loop looks for the section we are trying to book the seat in
-		for(FlightSection currentFlightSection : sections)
+		for(Partition currentFlightSection : myPartitions)
 		{
-			if(currentFlightSection.getType() == sectionType)
+			if(((FlightSection)currentFlightSection).getType() == sectionType)
 			{
-				desiredSection = currentFlightSection;
+				desiredSection = (FlightSection)currentFlightSection;
 			}
 		}
 		
@@ -87,9 +87,9 @@ public class Flight extends Transportation {
 	}
 	
 	
-	
+	/*
 	public LinkedList<FlightSection> getFlightSections()
 	{
 		return sections;
-	}	
+	}	//*/
 }

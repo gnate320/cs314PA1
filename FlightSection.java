@@ -15,7 +15,7 @@ import java.util.LinkedList;
  * replacing the section).
  */
 
-public class FlightSection {
+public class FlightSection extends Partition {
 	
 	private static final int MAXROWS = 100;
 	private static final int MINROWS = 1;
@@ -38,6 +38,7 @@ public class FlightSection {
 	 */
 	public FlightSection(Flight flightArg,  int rowsArg, int columnsArg, SeatClass typeArg) throws ManagementException
 	{
+		super();
 		//Check to see if the flight is null
 		if(flightArg == null)
 		{
@@ -82,15 +83,15 @@ public class FlightSection {
 	public void updateFlightSectionList() throws ManagementException
 	{
 		boolean foundSameTypeSection = false;
-		LinkedList<FlightSection> sectionList = flight.getFlightSections(); //Just a shortcut so we don't have to keep calling the method on the right
+		LinkedList<Partition> sectionList = flight.getPartitions(); //Just a shortcut so we don't have to keep calling the method on the right
 				
-		for(FlightSection currentSection : sectionList)
+		for(Partition currentSection : sectionList)
 		{
-			if(currentSection.getType() == this.getType())
+			if(((FlightSection)currentSection).getType() == this.getType())
 			{
 				//A section of this type already exists. If it's empty, we can replace it. If it's not empty, then we can't replace it.
 				foundSameTypeSection = true;
-				if(currentSection.isEmpty())
+				if(((FlightSection)currentSection).isEmpty())
 				{ 
 					//It was empty, replace it.
 					currentSection = this;
@@ -98,7 +99,7 @@ public class FlightSection {
 				else
 				{ 
 					//It wasn't empty, throw an error.
-					throw new ManagementException("You have attempted to replace " + this.toString() + " on flight " + currentSection.getFlight() 
+					throw new ManagementException("You have attempted to replace " + this.toString() + " on flight " + ((FlightSection)currentSection).getFlight() 
 							+ ", but at least one seat is already booked in that section.");
 				}
 			}

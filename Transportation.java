@@ -19,6 +19,7 @@ public class Transportation {
 	protected TransportStation origin;
 	protected TransportStation destination;
 	protected Calendar date;
+	protected LinkedList<Partition> myPartitions; 
 	
 	// CONSTRUCTOR //
 	public Transportation(Company ownerArg, TransportStation originArg, TransportStation destinationArg, Calendar dateArg, String idArg) throws ManagementException
@@ -80,6 +81,8 @@ public class Transportation {
 		origin = originArg;
 		destination = destinationArg;
 		date = dateArg;	
+		
+		owner.addTransport(this);
 	}
 	
 	
@@ -137,6 +140,10 @@ public class Transportation {
 	public TransportStation getDestination() 
 	{
 		return destination;
+	}
+	
+	public LinkedList<Partition> getPartitions(){
+		return myPartitions;
 	}
 
 }

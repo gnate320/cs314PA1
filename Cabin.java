@@ -1,5 +1,5 @@
 import java.util.LinkedList;
-public class Cabin {
+public class Cabin extends Partition{
 	private static final int FAMILY = 5;
 	private static final int SINGLE = 2;
 	
@@ -10,6 +10,7 @@ public class Cabin {
 	private Bed[] bedArray;
 	
 	public Cabin (Cruise cruiseArg, SeatClass typeArg) throws ManagementException{
+		super();
 		if(cruiseArg == null){
 			throw new ManagementException("You are attempting to create a new Cabin, but gave a null Cruise.  Cabins must belong to a Cruise");
 		}
@@ -32,7 +33,7 @@ public class Cabin {
 		}
 		type = typeArg;
 		//Add this cabin to the cruise list of cabins
-		LinkedList<Cabin> cabinList = cruise.getCabins();
+		LinkedList<Partition> cabinList = cruise.getPartitions();
 		cabinList.add(this);
 	}
 	

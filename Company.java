@@ -90,7 +90,28 @@ public class Company {
 		return acceptableTransList;
 	}
 	
-	public HashTable<String, Transportation> getTransports() {
+	public void addTransport(Transportation transportArg) throws ManagementException
+	{
+		//Check if the flight object is null
+		if(transportArg == null)
+		{
+			throw new ManagementException("You tried to assign a null flight to airline " + toString());
+		}
+		
+		//We just need to check if this airline already has a flight with that number.
+		Transportation existingTransport = myTransports.get(transportArg.getId());
+		if(existingTransport != null)
+		{
+			//Then the flight must already exist if existingFlight is not null
+			throw new ManagementException("You are attempting to add " + transportArg + ", but a transport with that ID is already registered with that company. " +existingTransport.getId() +
+										existingTransport.getDestination());
+		}
+		
+		//If the above test passed, then we can accept the flight for this Airline.
+		myTransports.put(transportArg.getId(), transportArg);
+	}
+	
+	public Hashtable<String, Transportation> getTransports() {
 		return myTransports;
 	}
 	
