@@ -1,3 +1,7 @@
+//Edited by
+//Nate Gillard and Andrew Benevideas
+//Date 9/11/2013
+
 /* ASSIGNMENT 1
 * File: SystemManager.java
 * Date: 08/28/2012
@@ -7,6 +11,7 @@ import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 /* The SystemManager is the controlling mechanism for
@@ -17,13 +22,75 @@ import java.util.Map.Entry;
  */
 public class SystemManager {
 
-	private Hashtable<String, Airport> airportDictionary;
-	private Hashtable<String, Airline> airlineDictionary;
+	private Hashtable<String, TransportStation> locationDictionary;
+	private Hashtable<String, Company> companyDictionary;
+	boolean crTr;
 
 	public SystemManager()
 	{
-		airportDictionary = new Hashtable<String, Airport>();
-		airlineDictionary = new Hashtable<String, Airline>();
+		locationDictionary = new Hashtable<String, TransportStation>();
+		companyDictionary = new Hashtable<String, Company>();
+	}
+	
+	public SystemManager(boolean crT)
+	{
+		locationDictionary = new Hashtable<String, TransportStation>();
+		companyDictionary = new Hashtable<String, Company>();
+		crTr = crT;
+	}
+
+	public boolean create(ArrayList<String> args) {
+	
+		if (args.get(0).equalsIgnoreCase("Airport") &&
+			args.size() == 2)
+			createAirport(args.get(1));
+		else if (args.get(0).equalsIgnoreCase("Port") &&
+                 args.size() == 2)
+			createPort(args.get(1));
+		else if (args.get(0).equalsIgnoreCase("Airline") &&
+                 args.size() == 2)
+			createAirline(args.get(1));
+		else if (args.get(0).equalsIgnoreCase("Cruiseline") &&
+                args.size() == 2)
+			createCruiseline(args.get(1));
+		else if (args.get(0).equalsIgnoreCase("Flight") && 
+				args.size() == 8)
+		{
+			createFlight(args.get(0), args.get(1), args.get(2), 
+							Integer.parseInt(args.get(3)), 
+							Integer.parseInt(args.get(4)),
+							Integer.parseInt(args.get(5)),
+							args.get(6));
+		}
+		else if (args.get(0).equalsIgnoreCase("Cruise") && 
+		args.size() < 6)
+		{
+			LinkedList<Port> stops;
+			int stopCount = Integer.parseInt(args.get(args.size()-1));
+			for (int i = 0; i < stopCount; i++)
+			{
+				String next = args.get(2+i*4);
+				//int y = Integer.parseInt(args[3+i*4]);
+				//int m = Integer.parseInt(args[4+i*4]);
+				//int d = Integer.parseInt(args[5+i*4]);
+				stops.add(new Port(next));
+			}
+			createCruise(args.get(1), stops,
+				 args.get(3), args.get(4), args.get(5),
+				args.get(args.size() - 2));
+		}
+		else if (args.get(0).equalsIgnoreCase("section") && 
+				args.size() == 6)
+		{
+			int r = Integer.parseInt(args.get(3));
+			int c = Integer.parseInt(args.get(4));
+			createSection(args.get(1), args.get(2),
+							 r, c, interpSectClass(args.get(5)));
+		}
+		else if (args.get(0).equalsIgnoreCase("cabin"))
+		{
+			//TODO
+		}
 	}
 
 	//Creates a new Airport. Returns null if there is an error during construction.
@@ -34,7 +101,7 @@ public class SystemManager {
 		try
 		{
 			newAirport = new Airport(idArg);
-			airportDictionary.put(idArg, newAirport);
+			locationDictionary.put(idArg, newAirport);
 		}
 		catch(ManagementException me)
 		{
@@ -45,6 +112,24 @@ public class SystemManager {
 		return newAirport;
 	}
 	
+	Port createPort(String idArg)
+	{
+		Port newPort;
+
+		try 
+		{
+			newPort = new Port(idArg);
+			locationDictionary.put(idArg, newPort);
+		}
+		catch (ManagementException me)
+		{
+			System.out.print(me);
+			newPort = null;
+		}
+		
+		return newPort;
+	}
+	
 	//Creates a new Airline. Returns null if there is an error during construction.
 	Airline createAirline(String idArg)
 	{
@@ -53,7 +138,7 @@ public class SystemManager {
 		try
 		{
 			newAirline = new Airline(idArg);
-			airlineDictionary.put(idArg, newAirline);
+			companyDictionary.put(idArg, newAirline);
 		}
 		catch(ManagementException me)
 		{
@@ -62,6 +147,25 @@ public class SystemManager {
 		}
 
 		return newAirline;
+	}
+	
+	//TODO:
+	Cruiseline createCruiseline(String idArg) 
+	{
+		Cruiseline newCruiseline;
+		
+		try
+		{
+			newCruiseline = new Cruiseline(idArg);
+			companyDictionary.put(idArg, newCruiseline);
+		}
+		catch(ManagementException me)
+		{
+			System.out.println(me);
+			newCruiseline = null;
+		}
+
+		return newCruiseline;
 	}
 
 	//Creates a flight given the name of an airline, origin airport, destination airport, date, and flight id.
@@ -85,14 +189,15 @@ public class SystemManager {
 		try
 		{
 			//Turn airport & airline strings into airport & airline objects
-			Airport origPort = findAirport(origAirport);
-			Airport destPort = findAirport(destAirport);
-			Airline airline = findAirline(airlineName);
+			TransportStation origPort = findLocation(origAirport);
+			TransportStation destPort = findLocation(destAirport);
+			Company airline = findCompany(airlineName);
 			
 			//The Flight constructor adds the given flight to the owning airlines flight list
-			newFlight = new Flight(airline, origPort, destPort, date, flightIdArg);
+			newFlight = new Flight( (Airline) airline, (Airport) origPort,(Airport) destPort, date, flightIdArg);
+			
 			//This was Nate ane Andrew
-			airline.addFlight(newFlight);
+			//airline.addFlight(newFlight);
 		}
 		catch(Exception e)
 		{
@@ -103,6 +208,9 @@ public class SystemManager {
 
 		return newFlight;
 	}
+	
+	//TODO
+	Cruise createCruise() {}
 
 	//Creates a seating section given the airline name, flight id, number of rows and columns and the class of the seating section
 	FlightSection createSection(String airlineName, String flightID, int rows, int cols, SeatClass sectionType)
@@ -112,8 +220,8 @@ public class SystemManager {
 		try
 		{
 			//Lookup airline and flight
-			Airline air = findAirline(airlineName);
-			Flight flight = air.findFlight(flightID);
+			Airline air = (Airline) findCompany(airlineName);
+			Flight flight =(Flight) air.findFlight(flightID);
 			newSection = new FlightSection(flight, rows, cols, sectionType);
 		}
 		catch(Exception e)
@@ -127,43 +235,43 @@ public class SystemManager {
 	}
 	
 	//Returns a string array of flights that have at least one available seat and are flying from the origin airport to a specific destination
-	String[] findAvailableFlights(String originAirportName, String destinationAirportName)
+	String[] findAvailableTransportation(String originName, String destinationName)
 	{
 		//Check to make sure strings are not null before converting them to objects
-		if(originAirportName == null || destinationAirportName == null)
+		if(originName == null || destinationName == null)
 		{
 			System.out.println("You are attempting to find a flight with either a null origin or null destination, or both."
-					+ "\nOrigin is " + originAirportName + ", destination is " + destinationAirportName + ".");
+					+ "\nOrigin is " + originName + ", destination is " + destinationName + ".");
 		}
 		
-		String[] flightIds;
+		String[] transportIds;
 		
 		try
 		{
 			//Look up airports
-			Airport originAirportObj = findAirport(originAirportName);
-			Airport destinationAirportObj = findAirport(destinationAirportName);
+			TransportStation originObj = findLocation(originName);
+			TransportStation destinationObj = findLocation(destinationName);
 
 			//Create a linked list of all the flights from all airlines that satisfy the criteria
-			LinkedList<Flight> flightList = new LinkedList<Flight>();
-			LinkedList<Airline> airlineList = hashtableToLinkedList(airlineDictionary);
+			LinkedList<Transportation> transportList = new LinkedList<Transportation>();
+			LinkedList<Company> companyList = hashtableToLinkedList(companyDictionary);
 			
 			//Look through all airlines and add those that have flights that satisfy criteria
-			for(Airline currentAirline : airlineList)
+			for(Company currentCompany : companyList)
 			{
-				LinkedList<Flight> validFlights = currentAirline.findAvailableFlights(originAirportObj, destinationAirportObj);
-				flightList.addAll(validFlights);
+				LinkedList<Transportation> validTransport =  currentCompany.findAvailableTransport(originObj, destinationObj);
+				transportList.addAll(validTransport);
 			}
 			
 			//Find the length of the linked list of validFlights and create a string array
-			int listLength = flightList.size();
-			 flightIds = new String[listLength];
+			int listLength = transportList.size();
+			 transportIds = new String[listLength];
 
 			//Put the names of all the flights into the string array and then return it
 			int i = 0;
-			for(Flight entry : flightList)
+			for(Transportation entry : transportList)
 			{
-				flightIds[i] = entry.toString();
+				transportIds[i] = entry.toString();
 				++i;
 			}
 		}
@@ -171,19 +279,19 @@ public class SystemManager {
 		{
 			//If lookups on the airports failed, then an error was thrown... return null
 			System.out.println(me);
-			flightIds = null;
+			transportIds = null;
 		}
 
-		if(flightIds != null)
+		if(transportIds != null)
 		{
 			//Print all flights that match that given criteria
-			for(String currentFlight : flightIds)
+			for(String currentTransport : transportIds)
 			{
-				System.out.println(currentFlight);
+				System.out.println(currentTransport);
 			}
 		}
 		
-		return flightIds;
+		return transportIds;
 	}
 
 	//Attempt to book a seat on a given airline's flight in the row and column of a given section
@@ -198,7 +306,7 @@ public class SystemManager {
 		try
 		{
 			//Look up airline and flight
-			Airline airline = findAirline(airlineName);
+			Airline airline = (Airline) findCompany(airlineName);
 			Flight flight = airline.findFlight(flightID);
 			//System.out.println(sectionType);
 			//System.out.println(row);
@@ -220,68 +328,74 @@ public class SystemManager {
 	void displaySystemDetails()
 	{
 		System.out.println("___Airports___");
-		LinkedList<Airport> airportList = hashtableToLinkedList(airportDictionary);
-		for(Airport currentAirport : airportList)
+		LinkedList<TransportStation> locationList = hashtableToLinkedList(locationDictionary);
+		for(TransportStation currentLocation : locationList)
 		{
 			//Print all airports
-			System.out.println(currentAirport);
+			System.out.println(currentLocation);
 		}
 
 		System.out.println("\n___Airlines___");
-		LinkedList<Airline> airlineList = hashtableToLinkedList(airlineDictionary);
-		for(Airline currentAirline : airlineList)
+		LinkedList<Company> companyList = hashtableToLinkedList(companyDictionary);
+		for(Company currentCompany : companyList)
 		{
-			//Print all airlines
-			System.out.println(currentAirline);
+			//Print all Transports
+			System.out.println(currentCompany);
 			
-			LinkedList<Flight> flightList = hashtableToLinkedList(currentAirline.getFlights());
-			for(Flight currentFlight : flightList)
+			LinkedList<Transportation> transportationList = hashtableToLinkedList(currentCompany.getTransports());
+			for(Transportation currentTransport : transportationList)
 			{
 				//Print all flights for a given airline
-				System.out.println("\tFlight " + currentFlight.getId() + " from " + currentFlight.getOrigin() + " to " 
-						+ currentFlight.getDestination() + " on " + currentFlight.getDateString());
-				
-				LinkedList<FlightSection> sectionList = currentFlight.getFlightSections();
-				for(FlightSection currentSection : sectionList)
+				System.out.println("\tFlight " + currentTransport.getId() + " from " + currentTransport.getOrigin() + " to " 
+						+ currentTransport.getDestination() + " on " + currentTransport.getDateString());
+				if (!crTr)
 				{
-					//Print all sections and seats for a given flight
-					System.out.println("\t\t" + currentSection);
-					System.out.println(currentSection.seatDetails(3));	
+					LinkedList<FlightSection> partList = currentTransport.getPartitions();
+					for(Partition currentSection : partList)
+					{
+						//Print all sections and seats for a given flight
+						System.out.println("\t\t" + currentSection);
+						System.out.println(currentSection.seatDetails(3));	
+					}
+				}
+				else
+				{
+					//TODO loop cabins and print
 				}
 			}
 		}
 	}
 
 	//Find an airport object given the string name. Cannot be given null strings.
-	public Airport findAirport(String name) throws ManagementException
+	public TransportStation findLocation(String name) throws ManagementException
 	{
 		if(name == null)
 		{
 			throw new NullPointerException("You are attempting to look up an airport, but the airport name is null.");
 		}
 		name = name.toUpperCase();
-		Airport air = airportDictionary.get(name);
+		TransportStation loc = locationDictionary.get(name);
 		if(air == null)
 		{
 			throw new ManagementException("You have attempted to look up an airport that does not exist. The name you gave was " +name);
 		}
-		return air;
+		return loc;
 	}
 
 	//Find an airline object given the string name. Cannot be given null strings.
-	public Airline findAirline(String name) throws ManagementException
+	public Company findCompany(String name) throws ManagementException
 	{
 		if(name == null)
 		{
 			throw new NullPointerException("You are attempting to look up an airline, but the airline name is null.");
 		}
 		name = name.toUpperCase();
-		Airline air = airlineDictionary.get(name);
-		if(air == null)
+		Company comp = companyDictionary.get(name);
+		if(comp == null)
 		{
 			throw new ManagementException("You have attempted to look up an airline that does not exist. The name you gave was " +name);
 		}
-		return air;
+		return comp;
 	}
 
 	//Converts hash tables to linked lists for easier iteration. This is static so that other classes can call this method,
@@ -303,4 +417,30 @@ public class SystemManager {
 		}
 		return newList;
 	}
+
+		static SeatClass interpSectClass(String in)
+		{
+			do {
+				if ( in.equalsIgnoreCase("b") ||
+					in.equalsIgnoreCase("bus") ||
+					in.equalsIgnoreCase("business") )
+					return SeatClass.business;
+				else if (in.equalsIgnoreCase("e") ||
+						in.equalsIgnoreCase("ec") ||
+						in.equalsIgnoreCase("econ") ||
+						in.equalsIgnoreCase("economy") )
+					return SeatClass.economy;
+				else if (in.equalsIgnoreCase("f") ||
+						in.equalsIgnoreCase("fir") ||
+						in.equalsIgnoreCase("1st") ||
+						in.equalsIgnoreCase("first") )
+					return SeatClass.first;
+				else
+				{
+					System.out.println("Invalid Section class!");
+					System.out.print("Enter 'econ', 'bus', or 'first': ");
+				}
+
+			} while (true);
+		}
 }

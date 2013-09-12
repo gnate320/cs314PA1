@@ -63,6 +63,36 @@ public class Company {
 		
 		return nameIsOK;
 	}
+
+	//Find available transportation
+	public LinkedList<Transportation> findAvailableTransport(TransportStation origin, TransportStation destination) throws ManagementException
+	{
+		//Check if the Transports are null
+		if(origin == null || destination == null)
+		{
+			throw new ManagementException("You are attempting to find flights from one airport to another, but either the destination or origin airport is null, or both. Origin: "
++ origin + ", Destination: " + destination);
+		}
+
+		//Create an empty list of acceptable transports and convert the transport hash to linked list for easy iteration
+		LinkedList<Transportation> acceptableTransList = new LinkedList<Transportation>();
+		LinkedList<Transportation> allTransList = SystemManager.hashtableToLinkedList(myTransports);
+
+		for(Transportation currentTransport : allTransList)
+		{
+			//If the current flight matches the given criteria, add it into the list of acceptable flights
+			if(currentTransport.getOrigin() == origin && currentTransport.getDestination() == destination /*&& currentTransport.hasAvailableBed()*/)
+			{			
+				acceptableTransList.add(currentTransport);
+			}
+		}
+
+		return acceptableTransList;
+	}
+	
+	public HashTable<String, Transportation> getTransports() {
+		return myTransports;
+	}
 	
 	public String toString()
 	{

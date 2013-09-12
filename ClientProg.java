@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Scanner;
-
+import java.util.ArrayList;
 public class ClientProg {
 	public static void main(String args[]){
 
@@ -10,8 +10,8 @@ public class ClientProg {
 		//    Air vs Sea.....
 
 		
-		SystemManager flightMan = new SystemManager();	
-		SystemManager cruiseMan = new SystemManager();		
+		SystemManager flightMan = new SystemManager(false);	
+		SystemManager cruiseMan = new SystemManager(true);		
 
 		String user = "";
 		String pass = "";
@@ -119,11 +119,13 @@ public class ClientProg {
 			}
 			else if (opt.equalsIgnoreCase("create") && admin)
 			{
+				ArrayList<String> args = new ArrayList<String>();
 				if (!commParse.hasNext())
 					printUsage("-c");
 				else
 				{
 					String createWhat = commParse.next();
+					args.add(createWhat);
 					if (createWhat.equalsIgnoreCase(location) )
 					{
 						String loc = ""; 
@@ -135,7 +137,9 @@ public class ClientProg {
 						}
 						else
 							loc = commParse.next();
-						res.createAirport(loc);
+						args.add(loc);
+						//res.createAirport(loc);
+						
 					}
 					if (createWhat.equalsIgnoreCase(company))
 					{
@@ -147,11 +151,13 @@ public class ClientProg {
 						}
 						else
 							name = commParse.next();
-						res.createAirline(name);
+						args.add(name);
+						//res.createAirline(name);
 					} 
 					if (createWhat.equalsIgnoreCase(transport))
 					{
 						// <airline/cruiseline>
+						Integer count = 1;
 						String line = "";
 						if (!commParse.hasNext())
 						{
@@ -162,7 +168,8 @@ public class ClientProg {
 						{
 							line = commParse.next();
 						}
-
+						args.add(line);
+						
 						//origin
 						String origin = "";
 						if (!commParse.hasNext())
@@ -174,10 +181,11 @@ public class ClientProg {
 						{
 							origin = commParse.next();
 						}						
-
+						args.add(origin);
 						boolean end;
 						do {	
 
+							count++;
 							//<destination>
 							String dest = "";
 							if (!commParse.hasNext())
@@ -189,7 +197,7 @@ public class ClientProg {
 							{
 								dest = commParse.next();
 							}
-
+							args.add(dest);
 							// <year>
 							String year = "";
 							if (!commParse.hasNext())
@@ -201,6 +209,7 @@ public class ClientProg {
 							{
 								year = commParse.next();
 							}
+							args.add(year);
 
 							// <month>
 							String month = "";
@@ -213,6 +222,7 @@ public class ClientProg {
 							{
 								month = commParse.next();
 							}
+							args.add(month);
 
 							// <day> 
 							String day = "";
@@ -225,6 +235,7 @@ public class ClientProg {
 							{
 								day = commParse.next();
 							}
+							args.add(day);
 						
 							end  = false;
 							if (crTravel)
@@ -250,10 +261,10 @@ public class ClientProg {
 						{
 							name = commParse.next();
 						}		
-						
-						//TODO turn strings in to int where needed
-						//TODO call res.create(createWhat, Company, origin, dest
-						//, stops, name/ID) 						
+						args.add(name);
+
+						//attach the number of stops
+						args.add(count.toString());
 					}
 					if (createWhat.equalsIgnoreCase("Section") && !crTravel )
 					{
@@ -267,7 +278,8 @@ public class ClientProg {
 						{
 							airline = commParse.next();
 						}
-						
+						args.add(airline);
+
 						String fID = "";
 						if (!commParse.hasNext())
 						{
@@ -278,42 +290,51 @@ public class ClientProg {
 						{
 							fID = commParse.next();
 						}
+						args.add(fID);
 							
-						int rows, cols;
-						if (!commParse.hasNextInt())
+						String rows,cols;
+						if (!commParse.hasNext())
 						{
 							System.out.print("Enter the number of rows: ");
-							rows = getInputInt();
+							rows = getInput();
 						}
 						else
 						{
-							rows = commParse.nextInt();
+							rows = commParse.next();
 						}
-						
-						if (!commParse.hasNextInt())
+						args.add(rows);	
+					
+						if (!commParse.hasNext())
 						{
 							System.out.print("Enter the number of columns: ");
-							cols = getInputInt();
+							cols = getInput();
 						}
 						else
 						{
-							cols = commParse.nextInt();
+							cols = commParse.next();
 						}
+						args.add(cols);
 						
-						SeatClass secType;
+						String secType;
 						if (!commParse.hasNext())
 						{
 							System.out.print("Enter the section's class: ");
-							secType = interpSectClass(getInput());
+							secType = getInput();
 						}
 						else
 						{
-							secType = interpSectClass(commParse.next());
+							secType = commParse.next();
 						}
+						args.add(secType);
 
-						res.createSection(airline, fID, rows, cols, secType);
+					//	res.createSection(airline, fID, rows, cols, secType);
+					}
+					else
+					{
+						System.out.println("Sorry you can not create a "+opt);
 					}
 
+					res.create(args);
 				}
 			}
 			else if (opt.equalsIgnoreCase("book"))
