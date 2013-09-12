@@ -5,61 +5,99 @@ import java.util.Scanner;
 
 public class ClientProg {
 	public static void main(String args[]){
-		SystemManager res = new SystemManager();
-		
+
 		//TODO: Establish Customer Vs Admin....
 		//    Air vs Sea.....
 
-		String location = "Airport";
-		String company = "Airline";
-		String transport = "Flight";
+		
+		SystemManager flightMan = new SystemManager();	
+		SystemManager cruiseMan = new SystemManager();		
 
-		//Create airports
-		/*	res.createAirport("DEN");
-		res.createAirport("DFW");
-		res.createAirport("LON");
-		res.createAirport("JPN");
-		res.createAirport("DE"); //invalid
-		res.createAirport("DEH");
-		res.createAirport("DEN");
-		res.createAirport("NCE");
-		res.createAirport("TRIord9"); //invalid
-		res.createAirport("DEN");
-		//Create airlines
-		res.createAirline("DELTA");
-		res.createAirline("AMER");
-		res.createAirline("JET");
-		res.createAirline("DELTA");
-		res.createAirline("SWEST");
-		res.createAirline("AMER");
-		res.createAirline("FRONT");
-		res.createAirline("FRONTIER"); //invalid
-		//Create flights
-		res.createFlight("DELTA", "DEN", "LON", 2014, 10, 10, "123");
-		res.createFlight("DELTA", "DEN", "DEH", 2014, 8, 8, "567");
-		res.createFlight("DELTA", "DEN", "NCE", 2014, 9, 8, "567");
-		//invalid
-		res.createFlight("JET", "LON", "DEN", 2014, 5, 7, "123");
-		res.createFlight("AMER", "DEN","LON", 2014, 10, 1, "123");
-		res.createFlight("JET", "DEN", "LON", 2014, 6, 10, "786");
-		res.createFlight("JET", "DEN", "LON", 2014, 1, 12, "909");
-		//Create sections
-		res.createSection("JET","123", 2, 2, SeatClass.economy);
-		res.createSection("JET","123", 1, 3, SeatClass.economy);
-		res.createSection("JET","123", 2, 3, SeatClass.first);
-		res.createSection("DELTA","123", 1, 1, SeatClass.business);
-		res.createSection("DELTA","123", 1, 2, SeatClass.economy);
-		res.createSection("SWSERTT","123", 5, 5, SeatClass.economy);
-		//invalid
-		res.displaySystemDetails();
-		res.findAvailableFlights("DEN", "LON");
-		res.bookSeat("DELTA", "123", SeatClass.business, 1, 'A');
-		res.bookSeat("DELTA", "123", SeatClass.economy, 1, 'A');
-		res.bookSeat("DELTA", "123", SeatClass.economy, 1, 'B');
-		res.bookSeat("DELTA", "123", SeatClass.business, 1, 'A');
-		//already booked
-		res.displaySystemDetails();
-		res.findAvailableFlights("DEN", "LON"); */
+		String user = "";
+		String pass = "";
+		String option = "";
+		boolean admin = false;
+		boolean crTr = false;
+		boolean again = false;
+		do {
+			
+			admin = false;	
+			System.out.print("Please enter your name: ");
+			user = getInput();
+			
+			if (user.equalsIgnoreCase("admin"))
+			{
+				do {
+					System.out.print("password: ");
+					pass = getInput();
+				
+					if (pass.equals("admin123"))
+						admin = true;
+			
+				}while (!admin);
+				
+			}		
+			
+			do {
+				System.out.print("Would you like to use the Cruise system? (yes/no): ");
+				option = getInput();
+			} while ( !option.equalsIgnoreCase("no") && 
+					  !option.equalsIgnoreCase("yes") &&
+					  !option.equalsIgnoreCase("y") &&
+                      !option.equalsIgnoreCase("n") );
+
+			SystemManager man;
+			if (option.equalsIgnoreCase("yes") ||
+				option.equalsIgnoreCase("y") )
+			{
+				man = cruiseMan;
+				crTr = true;
+			}
+			else 
+			{
+				man = flightMan;
+				crTr = false;	
+			}
+			
+			Client(man, admin, crTr );
+			
+			do {
+				System.out.print("Would you like to login again? (yes/no): ");
+				option = getInput();
+			} while ( !option.equalsIgnoreCase("no") && 
+					  !option.equalsIgnoreCase("yes") &&
+					  !option.equalsIgnoreCase("y") &&
+                      !option.equalsIgnoreCase("n") );
+
+			if (option.equalsIgnoreCase("yes") ||
+				option.equalsIgnoreCase("y") )
+				again = true;
+			else
+				again = false;
+			
+		}while(again);
+				
+		
+
+		System.out.println("Thank You, have a wonderful trip!");
+	}
+
+	static void Client(SystemManager res, boolean admin, boolean crTravel) {
+
+		String location, company, transport;
+
+		if (crTravel)
+		{
+			location = "Port";
+			company = "Cruiseline";
+			transport = "Cruise";
+		}
+		else
+		{
+			location = "Airport";
+			company = "Airline";
+			transport = "Flight";
+		}
 
 			
 		String command = "";
@@ -79,7 +117,7 @@ public class ClientProg {
 				else
 					printUsage(commParse.next());
 			}
-			else if (opt.equalsIgnoreCase("create"))
+			else if (opt.equalsIgnoreCase("create") && admin)
 			{
 				if (!commParse.hasNext())
 					printUsage("-c");
@@ -113,7 +151,7 @@ public class ClientProg {
 					} 
 					if (createWhat.equalsIgnoreCase(transport))
 					{
-						// <airline/cruisline>
+						// <airline/cruiseline>
 						String line = "";
 						if (!commParse.hasNext())
 						{
@@ -189,8 +227,9 @@ public class ClientProg {
 							}
 						
 							end  = false;
-							if (transport.equalsIgnoreCase("Cruise"))
+							if (crTravel)
 							{
+								//TODO add the port to a list of ports.
 								System.out.print("Is this the final port? (yes/no): ");
 								String ans = getInput();
 								if (ans.equalsIgnoreCase("yes") ||
@@ -198,9 +237,9 @@ public class ClientProg {
 									end = true; 						
 							}
 
-						}while(transport.equalsIgnoreCase("Cruise") && end == false);
+						}while( crTravel && !end);
 						
-						// <flightID>
+						// <flightID//Cruise name>
 						String name = "";
 						if (!commParse.hasNext())
 						{
@@ -210,10 +249,71 @@ public class ClientProg {
 						else
 						{
 							name = commParse.next();
+						}		
+						
+						//TODO turn strings in to int where needed
+						//TODO call res.create(createWhat, Company, origin, dest
+						//, stops, name/ID) 						
+					}
+					if (createWhat.equalsIgnoreCase("Section") && !crTravel )
+					{
+						String airline = "";
+						if (!commParse.hasNext())
+						{
+							System.out.print("Enter the Airline: ");
+							airline = getInput();
+						}
+						else
+						{
+							airline = commParse.next();
+						}
+						
+						String fID = "";
+						if (!commParse.hasNext())
+						{
+							System.out.print("Enter the FlightID: ");
+							fID = getInput();
+						}
+						else
+						{
+							fID = commParse.next();
+						}
+							
+						int rows, cols;
+						if (!commParse.hasNextInt())
+						{
+							System.out.print("Enter the number of rows: ");
+							rows = getInputInt();
+						}
+						else
+						{
+							rows = commParse.nextInt();
+						}
+						
+						if (!commParse.hasNextInt())
+						{
+							System.out.print("Enter the number of columns: ");
+							cols = getInputInt();
+						}
+						else
+						{
+							cols = commParse.nextInt();
+						}
+						
+						SeatClass secType;
+						if (!commParse.hasNext())
+						{
+							System.out.print("Enter the section's class: ");
+							secType = interpSectClass(getInput());
+						}
+						else
+						{
+							secType = interpSectClass(commParse.next());
 						}
 
-						 
+						res.createSection(airline, fID, rows, cols, secType);
 					}
+
 				}
 			}
 			else if (opt.equalsIgnoreCase("book"))
@@ -227,11 +327,9 @@ public class ClientProg {
 				
 		}while(!command.equalsIgnoreCase("quit") &&
                !command.equalsIgnoreCase("q") );
-
-				
-			
+		
 	}
-	
+
 	static String getInput() {
 		BufferedReader cin = new BufferedReader(new InputStreamReader(System.in));
 
@@ -245,6 +343,51 @@ public class ClientProg {
 		}
 		
 		return command;
+	}
+
+	static int getInputInt() {
+		BufferedReader cin = new BufferedReader(new InputStreamReader(System.in));
+
+		String command;
+		int num;
+		try {
+			command = cin.readLine();
+			Scanner cscan = new Scanner(command);
+			num = cscan.nextInt();
+		}
+		catch (Exception e) {
+			System.out.println("IOException: error reading input from the command line.");
+			return -1;
+		}
+		
+		
+		return num;
+	}
+
+	static SeatClass interpSectClass(String in)
+	{
+		do {
+			if ( in.equalsIgnoreCase("b") ||
+				in.equalsIgnoreCase("bus") ||
+			 	in.equalsIgnoreCase("business") )
+				return SeatClass.business;
+			else if (in.equalsIgnoreCase("e") ||
+					in.equalsIgnoreCase("ec") ||
+					in.equalsIgnoreCase("econ") ||
+					in.equalsIgnoreCase("economy") )
+				return SeatClass.economy;
+			else if (in.equalsIgnoreCase("f") ||
+					in.equalsIgnoreCase("fir") ||
+					in.equalsIgnoreCase("1st") ||
+					in.equalsIgnoreCase("first") )
+				return SeatClass.first;
+		else 
+		{
+			System.out.println("Invalid Section class!");
+			System.out.print("Enter 'econ', 'bus', or 'first': ");
+		}
+		
+		} while (true);
 	}
 
 	static void printUsage(String o) {
@@ -269,7 +412,8 @@ public class ClientProg {
 			System.out.println(" create Section");
 			System.out.println(" create Cabin");
 			
-			System.out.print("\n If all of the required information is");
+			System.out.print("\n With the exception of cruises, if all of the ");
+			System.out.print("required information is ");
 			System.out.print("available, it can be entered in one line.");
 			System.out.println("The details must be in the correct order.");
 			System.out.println("\nExamples:");
@@ -280,7 +424,7 @@ public class ClientProg {
 			System.out.print(" create Flight <name> <origin> ");
 			System.out.print("<destination> <year> <month> <day> ");
 			System.out.println("<flightID> ");
-			System.out.println(" create Cruise LOLOLOL");
+			//System.out.println(" create Cruise LOLOLOL");
 			System.out.print(" create Section <Airline> <flightID> ");
 			System.out.println("<#rows> <#columns> <class>");
 			System.out.println(" create Cabin <LOLOLOLOLOLOLOLOLOL>");		
@@ -288,10 +432,6 @@ public class ClientProg {
 		else if (o.equalsIgnoreCase("-b"))
 		{
 			System.out.println("\nhelp specific to book.  syntax ect...");
-		}
-		else if (o.equalsIgnoreCase("-d"))
-		{
-			System.out.println("\nhelp specific to display.  syntax ect...");
 		}
 		else
 		{
@@ -310,8 +450,8 @@ public class ClientProg {
 		    System.out.print("It is important to have all of the required information when booking a trip.  ");
 			System.out.print("For help with 'book' enter 'help -b'.\n\n");
 
-			System.out.println("\t'Display' <Flight/Cruise>\n");
-			System.out.print("The 'display' command allows you to view the current records of Flights or Cruises.  Display can be useful for planning a reservation. For help with Display enter 'help -d'.\n\n");
+			System.out.println("\t'Display'\n");
+			System.out.print("The 'display' command allows you to view the current records of Flights or Cruises.  Display can be useful for planning a reservation.\n\n");
 		}
 	}	
 
