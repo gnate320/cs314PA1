@@ -109,6 +109,7 @@ public class Company {
 		
 		//If the above test passed, then we can accept the flight for this Airline.
 		myTransports.put(transportArg.getId(), transportArg);
+		
 	}
 	
 	public Hashtable<String, Transportation> getTransports() {

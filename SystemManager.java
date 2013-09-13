@@ -6,7 +6,9 @@
 * File: SystemManager.java
 * Date: 08/28/2012
 */
-
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -53,19 +55,19 @@ public class SystemManager {
 		else if (args.get(0).equalsIgnoreCase("Cruiseline") &&
                 args.size() == 2)
 			createCruiseline(args.get(1));
-		else if (args.get(0).equalsIgnoreCase("Flight") && 
-				args.size() == 8)
+		else if (args.get(0).equalsIgnoreCase("Flight") /* && 
+					args.size() == 8 */)
 		{
-			createFlight(args.get(0), args.get(1), args.get(2), 
-							Integer.parseInt(args.get(3)), 
-							Integer.parseInt(args.get(4)),
+			createFlight(args.get(1), args.get(2), args.get(3), 
+							Integer.parseInt(args.get(4)), 
 							Integer.parseInt(args.get(5)),
-							args.get(6));
+							Integer.parseInt(args.get(6)),
+							args.get(7));
 		}
 		else if (args.get(0).equalsIgnoreCase("Cruise") && 
 		args.size() < 6)
 		{
-			LinkedList<Port> stops;
+			LinkedList<Port> stops = new LinkedList<Port>();
 			int stopCount = Integer.parseInt(args.get(args.size()-1));
 			for (int i = 0; i < stopCount; i++)
 			{
@@ -73,31 +75,64 @@ public class SystemManager {
 				//int y = Integer.parseInt(args[3+i*4]);
 				//int m = Integer.parseInt(args[4+i*4]);
 				//int d = Integer.parseInt(args[5+i*4]);
+				try {
 				stops.add(new Port(next));
+				}
+				catch (ManagementException me)
+				{
+					System.out.print(me);
+				}
 			}
-			createCruise(args.get(1), stops,
+		/*	createCruise(args.get(1), stops,
 				 args.get(3), args.get(4), args.get(5),
-				args.get(args.size() - 2));
+				args.get(args.size() - 2)); */
 		}
 		else if (args.get(0).equalsIgnoreCase("section") && 
 				args.size() == 6)
 		{
 			int r = Integer.parseInt(args.get(3));
 			int c = Integer.parseInt(args.get(4));
-			createSection(args.get(1), args.get(2),
-							 r, c, interpSectClass(args.get(5)));
+			int t = interpSectClass(args.get(5));
+			
+			SeatClass typeSec = SeatClass.economy;
+			if (t == 1)
+			{
+				createSection(args.get(1), args.get(2),
+							 r, c, SeatClass.business);
+			}
+			else if (t==2)
+			{
+				createSection(args.get(1), args.get(2),
+							 r, c, SeatClass.economy);
+			}
+			else if (t==3)
+			{
+				createSection(args.get(1), args.get(2),
+							 r, c, SeatClass.first);
+			}
+			else	
+			{
+				createSection(args.get(1), args.get(2),
+							 r, c, SeatClass.economy);
+			}
 		}
 		else if (args.get(0).equalsIgnoreCase("cabin"))
 		{
 			//TODO
 		}
+			
+		//TODO: MAKE SURE THE CREATE WORKED before retuning true;
+		return true;
 	}
 
+	public boolean book(ArrayList<String> args)
+	{return true;}
+	
 	//Creates a new Airport. Returns null if there is an error during construction.
 	Airport createAirport(String idArg)
 	{
 		Airport newAirport;
-
+		idArg = idArg.toUpperCase();
 		try
 		{
 			newAirport = new Airport(idArg);
@@ -115,7 +150,7 @@ public class SystemManager {
 	Port createPort(String idArg)
 	{
 		Port newPort;
-
+		idArg = idArg.toUpperCase();
 		try 
 		{
 			newPort = new Port(idArg);
@@ -134,6 +169,7 @@ public class SystemManager {
 	Airline createAirline(String idArg)
 	{
 		Airline newAirline;
+		idArg = idArg.toUpperCase();
 
 		try
 		{
@@ -153,7 +189,8 @@ public class SystemManager {
 	Cruiseline createCruiseline(String idArg) 
 	{
 		Cruiseline newCruiseline;
-		
+		idArg = idArg.toUpperCase();
+	
 		try
 		{
 			newCruiseline = new Cruiseline(idArg);
@@ -197,7 +234,7 @@ public class SystemManager {
 			newFlight = new Flight( (Airline) airline, (Airport) origPort,(Airport) destPort, date, flightIdArg);
 			
 			//This was Nate ane Andrew
-			//airline.addFlight(newFlight);
+			//airline.addTransport(newFlight);
 		}
 		catch(Exception e)
 		{
@@ -210,7 +247,7 @@ public class SystemManager {
 	}
 	
 	//TODO
-	Cruise createCruise() {}
+	Cruise createCruise() { return null;}
 
 	//Creates a seating section given the airline name, flight id, number of rows and columns and the class of the seating section
 	FlightSection createSection(String airlineName, String flightID, int rows, int cols, SeatClass sectionType)
@@ -221,7 +258,11 @@ public class SystemManager {
 		{
 			//Lookup airline and flight
 			Airline air = (Airline) findCompany(airlineName);
+			if (air == null)
+				System.out.println("airline is null");
 			Flight flight =(Flight) air.findFlight(flightID);
+			if (flight == null)
+				System.out.println("flight is null");
 			newSection = new FlightSection(flight, rows, cols, sectionType);
 		}
 		catch(Exception e)
@@ -343,19 +384,30 @@ public class SystemManager {
 			System.out.println(currentCompany);
 			
 			LinkedList<Transportation> transportationList = hashtableToLinkedList(currentCompany.getTransports());
+			
+			/*
+			if (transportationList == null)
+				System.out.println("WTF!!!!!");
+			else
+				System.out.print(transportationList);
+			*/
 			for(Transportation currentTransport : transportationList)
 			{
+				//System.out.println("Inside the for loop of flights");
 				//Print all flights for a given airline
 				System.out.println("\tFlight " + currentTransport.getId() + " from " + currentTransport.getOrigin() + " to " 
 						+ currentTransport.getDestination() + " on " + currentTransport.getDateString());
 				if (!crTr)
 				{
-					LinkedList<FlightSection> partList = currentTransport.getPartitions();
-					for(Partition currentSection : partList)
+					LinkedList<Partition> partList = currentTransport.getPartitions();
+					if (partList != null)
 					{
-						//Print all sections and seats for a given flight
-						System.out.println("\t\t" + currentSection);
-						System.out.println(currentSection.seatDetails(3));	
+						for(Partition currentSection : partList)
+						{
+							//Print all sections and seats for a given flight
+							System.out.println("\t\t" + currentSection);
+							System.out.println(((FlightSection)currentSection).seatDetails(3));	
+						}
 					}
 				}
 				else
@@ -363,6 +415,7 @@ public class SystemManager {
 					//TODO loop cabins and print
 				}
 			}
+			//System.out.println("done!");
 		}
 	}
 
@@ -375,7 +428,7 @@ public class SystemManager {
 		}
 		name = name.toUpperCase();
 		TransportStation loc = locationDictionary.get(name);
-		if(air == null)
+		if(loc == null)
 		{
 			throw new ManagementException("You have attempted to look up an airport that does not exist. The name you gave was " +name);
 		}
@@ -418,29 +471,42 @@ public class SystemManager {
 		return newList;
 	}
 
-		static SeatClass interpSectClass(String in)
-		{
-			do {
-				if ( in.equalsIgnoreCase("b") ||
-					in.equalsIgnoreCase("bus") ||
-					in.equalsIgnoreCase("business") )
-					return SeatClass.business;
-				else if (in.equalsIgnoreCase("e") ||
-						in.equalsIgnoreCase("ec") ||
-						in.equalsIgnoreCase("econ") ||
-						in.equalsIgnoreCase("economy") )
-					return SeatClass.economy;
-				else if (in.equalsIgnoreCase("f") ||
-						in.equalsIgnoreCase("fir") ||
-						in.equalsIgnoreCase("1st") ||
-						in.equalsIgnoreCase("first") )
-					return SeatClass.first;
-				else
-				{
-					System.out.println("Invalid Section class!");
-					System.out.print("Enter 'econ', 'bus', or 'first': ");
-				}
+	static int interpSectClass(String in)
+	{
+		System.out.print(in);
+		do {
+			if ( in.charAt(0) == 'b' )
+			{
+				return 1;
+			}
+			else if (in.charAt(0) == 'e' )
+			{
+				return 2;
+			}
+			else if (in.charAt(0) == 'f' )
+			{
+				return 3;
+			}
+			else
+			{
+				System.out.println("Invalid Section class!");
+				System.out.print("Enter 'econ', 'bus', or 'first': ");
+				in = getInput();
+			}
+		} while (true);
+	}
+	static String getInput() {
+		BufferedReader cin = new BufferedReader(new InputStreamReader(System.in));
 
-			} while (true);
+		String command;
+		try {
+			command = cin.readLine();
 		}
+		catch (IOException e) {
+			System.out.println("IOException: error reading input from the command line.");
+			command = "";
+		}
+
+		return command;
+	}
 }

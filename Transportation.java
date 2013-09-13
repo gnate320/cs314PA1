@@ -24,6 +24,7 @@ public class Transportation {
 	// CONSTRUCTOR //
 	public Transportation(Company ownerArg, TransportStation originArg, TransportStation destinationArg, Calendar dateArg, String idArg) throws ManagementException
 	{
+		//System.out.print("INSIDE TRANSPORT CONSTER");
 		//Check to see if the string is null
 		if(idArg == null)
 		{

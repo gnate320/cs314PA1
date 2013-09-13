@@ -329,17 +329,87 @@ public class ClientProg {
 
 					//	res.createSection(airline, fID, rows, cols, secType);
 					}
-					else
-					{
-						System.out.println("Sorry you can not create a "+opt);
-					}
-
 					res.create(args);
 				}
 			}
 			else if (opt.equalsIgnoreCase("book"))
 			{	
+				ArrayList<String> args = new ArrayList<String>();
+				if (!commParse.hasNext())
+					printUsage("-b");
+				else 
+				{
+					String bookWhat = commParse.next();
+					args.add(bookWhat);
+					
+					String line = "";
+					if (!commParse.hasNext())
+					{
+						System.out.print("Enter the "+ company+ " name: ");
+						line = getInput();
+					}
+					else
+					{
+						line = commParse.next();
+					}
+					args.add(line);
+					
+					//if this is a cruise client get infor for cabin selection
+					if (crTravel)
+					{
+						//Cruise name
 
+						//origin / dest
+						
+						//date
+					}
+					else
+					{
+						//Flight ID
+						String fID = "";
+						if (!commParse.hasNext())
+						{
+							System.out.print("Enter the Flight ID: ");
+							fID = getInput();
+						}
+						else
+							fID = commParse.next();
+						args.add(fID);		
+				
+						//sectionType
+						String secType = "";
+						if (!commParse.hasNext())
+						{
+							System.out.print("Enter the section class: ");
+							secType = getInput();
+						}
+						else
+							secType = commParse.next();
+						args.add(secType);
+
+						//row column
+						String row = "";
+						if (!commParse.hasNext())
+						{
+							System.out.print("Enter your desired row: ");
+							row = getInput();
+						}
+						else
+							row = commParse.next();
+						args.add(row);						
+
+						String col = "";
+						if (!commParse.hasNext())
+						{
+							System.out.print("enter your desired row: ");
+						}
+						else
+							col = commParse.next();
+						args.add(col);
+					}
+					
+					res.book(args);
+				}
 			}
 			else if (opt.equalsIgnoreCase("display"))
 			{
